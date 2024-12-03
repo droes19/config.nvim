@@ -12,8 +12,15 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local rocks = true
+if vim.g.platform:match("Linux") then
+    rocks = true
+else
+    rocks = false
+end
+
 require("lazy").setup({
 	spec = "droes.lazy",
 	change_detection = { notify = false },
-    rocks = { enabled = false }
+    rocks = { enabled = rocks }
 })

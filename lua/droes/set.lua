@@ -84,3 +84,6 @@ vim.opt.termguicolors = true
 -- vim.opt.isfname:append("@-@")
 
 -- vim.opt.colorcolumn = "80"
+--
+
+vim.g.platform = vim.loop.os_uname().sysname
