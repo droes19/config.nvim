@@ -59,7 +59,7 @@ set("x", "<space>p", [["_dP]])
 -- set({ "n", "v" }, "<leader>d", '"_d')
 
 set("i", "<C-c>", "<Esc>")
-set("i", "jj", "<Esc>")
+set("i", ":w", "<Esc>") --  sometimes i forgot to back to normal mode when i want to save
 
 set("n", "Q", "<nop>")
 -- set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")

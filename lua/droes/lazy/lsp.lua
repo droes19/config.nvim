@@ -11,11 +11,11 @@ local dependencies = {
             },
         },
     },
-        { "Bilal2453/luvit-meta",                        lazy = true },
-        { "j-hui/fidget.nvim",                           opts = {} },
-        { "https://git.sr.ht/~whynothugo/lsp_lines.nvim" },
-        "stevearc/conform.nvim",
-        "b0o/SchemaStore.nvim",
+    { "Bilal2453/luvit-meta",                        lazy = true },
+    { "j-hui/fidget.nvim",                           opts = {} },
+    { "https://git.sr.ht/~whynothugo/lsp_lines.nvim" },
+    "stevearc/conform.nvim",
+    "b0o/SchemaStore.nvim",
 }
 if vim.g.platform:match("Linux") then
     vim.list_extend(dependencies, {
@@ -23,10 +23,10 @@ if vim.g.platform:match("Linux") then
         "williamboman/mason-lspconfig.nvim",
         "WhoIsSethDaniel/mason-tool-installer.nvim"
     })
-else 
+else
     vim.list_extend(dependencies, {
-            { dir = "C:/Projects/Program/nvim-plugin/mason.nvim" }
-})
+        { dir = "C:/Projects/Program/nvim-plugin/mason.nvim" }
+    })
 end
 
 return {
@@ -35,7 +35,6 @@ return {
         dependencies = dependencies,
         config = function()
             local lsp_plugin = require("droes/plugin.lsp")
-            print(lsp_plugin)
             lsp_plugin.setup_mason()
             lsp_plugin.setup_conform()
             require("lsp_lines").setup()

@@ -6,7 +6,9 @@ local root_dir = require("jdtls.setup").find_root(root_markers)
 -- local workspace_folder = "~/.local/share/eclipse/" .. vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 local workspace_folder = home .. "/.local/share/eclipse/" .. vim.fn.fnamemodify(root_dir, ":p:h:t")
 
-local javaPath = os.getenv("JAVA_HOME") or "/usr/lib/jvm/java-21-openjdk-amd64"
+-- for installation jdtls via mason should change JAVA_HOME to java >=17
+-- my JAVA_HOME in windows using java 1.8
+local javaPath = os.getenv("JAVA_HOME") and "C:/Projects/Program/java/jdk-21.0.1" or "/usr/lib/jvm/java-21-openjdk-amd64"
 local lombokJar = vim.fn.stdpath("data") .. "/mason/packages/jdtls/lombok.jar"
 local launcherJar = vim.fn.stdpath("data") .. "/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"
 local configPath = os.getenv("JAVA_HOME") and vim.fn.stdpath("data") .. "/mason/packages/jdtls/config_win"
@@ -19,7 +21,7 @@ if not vim.g.platform:match("Linux") then
 	vim.list_extend(java_runtimes, {
 		{
 			name = "JavaSE-1.8",
-			path = "C:/Users/idrus^kaafi/Projects/java/jdk1.8.0_432",
+			path = os.getenv("JAVA_HOME"),
 		},
 	})
 end
