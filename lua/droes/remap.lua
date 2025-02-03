@@ -79,3 +79,39 @@ set("n", "<space><space>", function()
 end)
 
 set("n", "<localleader>r", "@")
+
+
+vim.api.nvim_create_autocmd('TermOpen', {
+    group = vim.api.nvim_create_augroup('custom-term-open', { clear = true }),
+    callback = function()
+        vim.opt.number = false
+        vim.opt.relativenumber = false
+    end
+})
+
+vim.g.open_terminal = function()
+    vim.cmd.vnew()
+    vim.cmd.term()
+    vim.cmd.wincmd("L")
+    vim.api.nvim_win_set_width(0,50)
+    -- vim.api.nvim_win_set_height(0, 0)
+
+    vim.g.job_id = vim.bo.channel
+end
+
+vim.g.run_term = function(c)
+    print(vim.g.job_id)
+    if vim.fn.winnr('$') == 1 then
+        print("here")
+        vim.g.open_terminal()
+    end
+    vim.fn.chansend(vim.g.job_id, c)
+end
+
+set("n", "<space>st", function()
+    vim.g.open_terminal()
+end)
+set("n", "<leader>a", function()
+    vim.g.run_term({ "dir\r\n" })
+end)
+set("t", "<C-H>", [[<C-\><C-n>]])

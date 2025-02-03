@@ -1,9 +1,6 @@
 local home = vim.fn.expand("$HOME")
 local root_markers = { "gradlew", "mvnw", ".git", "pom.xml" }
 local root_dir = require("jdtls.setup").find_root(root_markers)
--- local root_dir = vim.fs.root(0, { ".git", "mvnw", "gradlew", "pom.xml" })
-
--- local workspace_folder = "~/.local/share/eclipse/" .. vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 local workspace_folder = home .. "/.local/share/eclipse/" .. vim.fn.fnamemodify(root_dir, ":p:h:t")
 
 -- for installation jdtls via mason should change JAVA_HOME to java >=17

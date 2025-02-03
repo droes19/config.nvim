@@ -77,20 +77,78 @@ local server_linux = function()
         jdtls = true,
     }
 end
+
 local server_windows = function()
-    return {
+    local home = vim.fn.expand("$HOME")
+    local root_markers = { "gradlew", "mvnw", ".git", "pom.xml" }
+    local root_dir = require("jdtls.setup").find_root(root_markers)
+    print(root_dir)
+    local workspace_folder = home .. "/.local/share/eclipse/" .. vim.fn.fnamemodify(root_dir, ":p:h:t")
+    local javaPath = os.getenv("JAVA_HOME") and "C:/Projects/Program/java/jdk-21.0.1" or
+        "/usr/lib/jvm/java-21-openjdk-amd64"
+    local lombokJar = vim.fn.stdpath("data") .. "/mason/packages/jdtls/lombok.jar"
+    local launcherJar = vim.fn.stdpath("data") .. "/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"
+    local configPath = os.getenv("JAVA_HOME") and vim.fn.stdpath("data") .. "/mason/packages/jdtls/config_win"
+        or vim.fn.stdpath("data") .. "/mason/packages/jdtls/config_linux"
+    local java_runtimes = {
+        { name = "JavaSE-21", path = javaPath },
+    }
+    if not vim.g.platform:match("Linux") then
+        vim.list_extend(java_runtimes, {
+            {
+                name = "JavaSE-1.8",
+                path = os.getenv("JAVA_HOME"),
+            },
+        })
+    end
+    local server = {
         lua_ls = {
             cmd = { "C:/Users/idrus^kaafi/Projects/lsp/lua_ls/bin/lua-language-server" },
             server_capabilities = {
                 semanticTokensProvider = vim.NIL,
             },
         },
+        vtsls = {
+            cmd = { "vtsls", "--stdio" }
+        },
+        angularls = {
+            cmd = {
+                'node',
+                'C:/Projects/Program/node/node_modules/@angular/language-server/index.js',
+                '--stdio',
+                '--tsProbeLocations',
+                'C:/Projects/Program/node/node_modules/@angular/language-server/node_modules',
+                '--ngProbeLocations',
+                'C:/Projects/Program/node/node_modules/@angular/language-server/node_modules',
+            },
+            on_new_config = function(new_config, new_root_dir)
+                new_config.cmd = {
+                    'node',
+                    'C:/Projects/Program/node/node_modules/@angular/language-server/index.js',
+                    '--stdio',
+                    '--tsProbeLocations',
+                    new_root_dir .. '/node_modules',
+                    '--ngProbeLocations',
+                    new_root_dir .. '/node_modules',
+                }
+            end,
+        },
+        tailwindcss = {
+            cmd = {
+                'tailwindcss-language-server', '--stdio'
+            },
+        },
+        html = {
+            cmd = { "vscode-html-language-server", '--stdio' }
+        },
     }
+    return server;
 end
 local setup_mason = function()
-    require("mason").setup({
-        log_level = vim.log.levels.DEBUG
-    })
+    require "mason".setup()
+    -- require("lspconfig").jdtls.setup({
+    --     log_level = vim.log.levels.DEBUG
+    -- })
     local servers = {}
 
     if vim.g.platform:match("Linux") then
@@ -111,7 +169,7 @@ local setup_mason = function()
     local ensure_installed = {
         "stylua",
         -- "lua_ls",
-        "google-java-format",
+        "prettier",
     }
     vim.list_extend(ensure_installed, servers_to_install)
 
@@ -195,14 +253,8 @@ local setup_conform = function()
                     "-",
                 },
             },
-            ["google-java-format"] = {
-                command = "C:/Users/idrus^kaafi/Projects/lsp/google-java-format/google-java-format",
-                args = {
-                    -- "--config-path", "C:/Users/idrus^kaafi/Projects/lsp/stylua/stylua.toml",
-                    "--enable-outside-detected-project",
-                    "--name", "$FILENAME",
-                    "-",
-                },
+            ["sql-formatter"] = {
+                command = "sql-formatter"
             }
         }
     end
@@ -210,9 +262,25 @@ local setup_conform = function()
         formatters = formatters,
         formatters_by_ft = {
             lua = { "stylua" },
-            java = { "google-java-format" },
+            -- javascript = { 'prettier' },
+            -- typescript = { 'prettier' },
+            css = { 'prettier' },
+            scss = { 'prettier' },
+            html = { 'prettier' },
+            json = { 'prettier' },
+            sql = { "sql-formatter" },
         }
     })
+
+    -- vim.keymap.set({ 'n', 'v' }, '<leader>f', function()
+    --     conform.format({
+    --         require("conform").format {
+    --             lsp_fallback = true,
+    --             async = false,
+    --             timeout_ms = 500,
+    --         }
+    --     })
+    -- end)
 
     vim.api.nvim_create_autocmd("BufWritePre", {
         group = vim.api.nvim_create_augroup("custom-conform", { clear = true }),
