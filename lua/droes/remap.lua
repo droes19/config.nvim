@@ -100,9 +100,7 @@ vim.g.open_terminal = function()
 end
 
 vim.g.run_term = function(c)
-    print(vim.g.job_id)
     if vim.fn.winnr('$') == 1 then
-        print("here")
         vim.g.open_terminal()
     end
     vim.fn.chansend(vim.g.job_id, c)
