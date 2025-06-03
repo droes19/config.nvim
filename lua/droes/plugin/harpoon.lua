@@ -14,3 +14,10 @@ for _, idx in ipairs { 1, 2, 3, 4, 5 } do
         harpoon:list():select(idx)
     end)
 end
+
+vim.keymap.set("n", "<C-S-P>", function()
+    harpoon:list():prev()
+end)
+vim.keymap.set("n", "<C-S-N>", function()
+    harpoon:list():next()
+end)

@@ -16,24 +16,26 @@ local dependencies = {
     { "https://git.sr.ht/~whynothugo/lsp_lines.nvim" },
     "stevearc/conform.nvim",
     "b0o/SchemaStore.nvim",
+    -- "nvim-java/nvim-java",
+    {"droes19/nvim-java", branch = "enhance-get-installed-version"},
+    "nvim-java/lua-async-await",
+    {
+        "mason-org/mason.nvim",
+        "mason-org/mason-lspconfig.nvim",
+    },
+    "WhoIsSethDaniel/mason-tool-installer.nvim"
 }
-if vim.g.platform:match("Linux") then
-    vim.list_extend(dependencies, {
-        "williamboman/mason.nvim",
-        "williamboman/mason-lspconfig.nvim",
-        "WhoIsSethDaniel/mason-tool-installer.nvim"
-    })
-else
-    vim.list_extend(dependencies, {
-        { dir = "C:/Projects/Program/nvim-plugin/mason.nvim" }
-    })
-end
 
 return {
     {
         "neovim/nvim-lspconfig",
         dependencies = dependencies,
         config = function()
+            require("java").setup({
+                -- java_debug_adapter = { enable = false },
+                jdk = { auto_install = false },
+                spring_boot_tools = { enable = false }
+            })
             local lsp_plugin = require("droes/plugin.lsp")
             lsp_plugin.setup_mason()
             lsp_plugin.setup_conform()

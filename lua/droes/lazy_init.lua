@@ -13,11 +13,11 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local rocks = true
-if vim.g.platform:match("Linux") then
-    rocks = true
-else
-    rocks = false
-end
+-- if vim.g.platform:match("Linux") then
+--     rocks = true
+-- else
+--     rocks = false
+-- end
 
 require("lazy").setup({
 	spec = "droes.lazy",

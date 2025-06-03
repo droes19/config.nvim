@@ -1,5 +1,5 @@
 return {
-    "theprimeagen/vim-be-good",
+    -- "theprimeagen/vim-be-good",
     --[[
 
     dependencies = {
