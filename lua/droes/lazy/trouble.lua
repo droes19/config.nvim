@@ -1,23 +1,19 @@
 return {
-    --[[
     "folke/trouble.nvim",
     config = function()
-        require("trouble").setup({
-            icons = false,
-        })
+        require("trouble").setup()
         local trouble = require "trouble"
         local view
         vim.keymap.set("n", "<leader>tt", function()
             trouble.toggle("diagnostics")
             -- view = trouble.open("diagnostics").new({win = {}})
         end)
-        --
+
         vim.keymap.set("n", "[t", function()
             print(view)
             trouble.next(view, {skip_groups = true, jump = true})
         end)
-        --
-        x
+
         vim.keymap.set("n", "]t", function()
             trouble.prev(view, {skip_groups = true, jump = true})
         end)
@@ -54,5 +50,4 @@ return {
             desc = "Quickfix List (Trouble)",
         },
     },
-    ]]--
 }

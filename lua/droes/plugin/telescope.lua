@@ -8,10 +8,10 @@ require("telescope").setup {
         wrap_results = true,
 
         fzf = {},
-        -- history = {
-        --   path = vim.fs.joinpath(data, "telescope_history.sqlite3"),
-        --   limit = 100,
-        -- },
+        history = {
+          path = vim.fs.joinpath(data, "telescope_history.sqlite3"),
+          limit = 100,
+        },
         ["ui-select"] = {
             require("telescope.themes").get_dropdown {},
         },
@@ -54,5 +54,5 @@ end, { desc = "Go to dir [N]vim [C]onfig" })
 set("n", "<space>@", builtin.registers)
 set("n", "<space>lk", builtin.keymaps)
 set("n", "<space>lc", builtin.colorscheme)
--- set('n', '<space>gd', builtin.lsp_definitions)
--- set('n', '<space>gr', builtin.lsp_references)
+set("n", "<space>lcm", builtin.commands)
+set("n", "<space>lac", builtin.autocommands)
