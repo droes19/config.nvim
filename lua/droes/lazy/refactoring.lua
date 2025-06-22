@@ -1,58 +1,49 @@
 return {
-    --[[
-    "ThePrimeagen/refactoring.nvim",
-    dependencies = {
-        "nvim-lua/plenary.nvim",
-        "nvim-treesitter/nvim-treesitter",
+  "ThePrimeagen/refactoring.nvim",
+  lazy = false,
+  opts = {
+    prompt_func_return_type = {
+      go = true,
+      cpp = true,
+      c = true,
+      java = true,
     },
-    lazy = false,
-    config = function()
-        local factoring = require("refactoring").setup({
-            require("refactoring").setup({
-                -- prompt for return type
-                prompt_func_return_type = {
-                    go = true,
-                    cpp = true,
-                    c = true,
-                    java = true,
-                },
-                -- prompt for function parameters
-                prompt_func_param_type = {
-                    go = true,
-                    cpp = true,
-                    c = true,
-                    java = true,
-                },
-            }),
-        })
+    -- prompt for function parameters
+    prompt_func_param_type = {
+      go = true,
+      cpp = true,
+      c = true,
+      java = true,
+    },
+  },
+  config = function()
+    local refactoring = require("refactoring")
+    vim.keymap.set({ "n", "x" }, "<leader>re", function()
+      return refactoring.refactor("Extract Function")
+    end, { expr = true })
 
-        vim.keymap.set("x", "<leader>re", function()
-            factoring.refactor("Extract Function")
-        end)
-        vim.keymap.set("x", "<leader>rf", function()
-            factoring.refactor("Extract Function To File")
-        end)
-        -- Extract function supports only visual mode
-        vim.keymap.set("x", "<leader>rv", function()
-            factoring.refactor("Extract Variable")
-        end)
-        -- Extract variable supports only visual mode
-        vim.keymap.set("n", "<leader>rI", function()
-            factoring.refactor("Inline Function")
-        end)
-        -- Inline func supports only normal
-        vim.keymap.set({ "n", "x" }, "<leader>ri", function()
-            factoring.refactor("Inline Variable")
-        end)
-        -- Inline var supports both normal and visual mode
+    vim.keymap.set({ "n", "x" }, "<leader>rf", function()
+      return refactoring.refactor("Extract Function To File")
+    end, { expr = true })
 
-        vim.keymap.set("n", "<leader>rb", function()
-            factoring.refactor("Extract Block")
-        end)
-        vim.keymap.set("n", "<leader>rbf", function()
-            factoring.refactor("Extract Block To File")
-        end)
-        -- Extract block supports only normal mode
-    end,
-    ]]--
+    vim.keymap.set({ "n", "x" }, "<leader>rv", function()
+      return refactoring.refactor("Extract Variable")
+    end, { expr = true })
+
+    vim.keymap.set({ "n", "x" }, "<leader>rI", function()
+      return refactoring.refactor("Inline Function")
+    end, { expr = true })
+
+    vim.keymap.set({ "n", "x" }, "<leader>ri", function()
+      return refactoring.refactor("Inline Variable")
+    end, { expr = true })
+
+    vim.keymap.set({ "n", "x" }, "<leader>rbb", function()
+      return refactoring.refactor("Extract Block")
+    end, { expr = true })
+
+    vim.keymap.set({ "n", "x" }, "<leader>rbf", function()
+      return refactoring.refactor("Extract Block To File")
+    end, { expr = true })
+  end,
 }

@@ -1,2 +1,1 @@
-require("droes")
-rawset(_G, "Job_id", 0)
+require "droes"

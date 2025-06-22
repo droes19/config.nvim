@@ -1,30 +1,29 @@
 return {
-    "ThePrimeagen/harpoon",
+  "ThePrimeagen/harpoon",
+  branch = "harpoon2",
+  config = function()
+    local harpoon = require("harpoon")
+    harpoon:setup()
 
-    branch = "harpoon2",
-    config = function()
-        local harpoon = require "harpoon"
-        harpoon:setup()
+    vim.keymap.set("n", "<space>a", function()
+      harpoon:list():add()
+    end)
+    vim.keymap.set("n", "<space>e", function()
+      harpoon.ui:toggle_quick_menu(harpoon:list())
+    end)
 
-        vim.keymap.set("n", "<space>a", function()
-            harpoon:list():add()
-        end)
-        vim.keymap.set("n", "<space>e", function()
-            harpoon.ui:toggle_quick_menu(harpoon:list())
-        end)
+    -- Set <space>1..<space>5 be my shortcuts to moving to the files
+    for _, idx in ipairs({ 1, 2, 3, 4, 5 }) do
+      vim.keymap.set("n", string.format("<space>%d", idx), function()
+        harpoon:list():select(idx)
+      end)
+    end
 
-        -- Set <space>1..<space>5 be my shortcuts to moving to the files
-        for _, idx in ipairs { 1, 2, 3, 4, 5 } do
-            vim.keymap.set("n", string.format("<space>%d", idx), function()
-                harpoon:list():select(idx)
-            end)
-        end
-
-        vim.keymap.set("n", "<M-p>", function()
-            harpoon:list():prev()
-        end)
-        vim.keymap.set("n", "<M-n>", function()
-            harpoon:list():next()
-        end)
-    end,
+    vim.keymap.set("n", "<M-p>", function()
+      harpoon:list():prev()
+    end)
+    vim.keymap.set("n", "<M-n>", function()
+      harpoon:list():next()
+    end)
+  end,
 }
