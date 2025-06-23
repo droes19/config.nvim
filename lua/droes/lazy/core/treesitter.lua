@@ -3,7 +3,26 @@ return {
   build = ":TSUpdate",
   config = function()
     require("nvim-treesitter.configs").setup({
-      ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "java" },
+      modules = {},
+      ensure_installed = {
+        "c",
+        "lua",
+        "vim",
+        "vimdoc",
+        "query",
+        "markdown",
+        "markdown_inline",
+        "java",
+        "javascript",
+        "typescript",
+        "html",
+        "css",
+        "json",
+        "yaml",
+        "bash",
+        "python",
+        "sql",
+      },
       sync_install = false,
       auto_install = true,
       ignore_install = {},
@@ -15,19 +34,11 @@ return {
 
     local group = vim.api.nvim_create_augroup("custom-treesitter", { clear = true })
 
-    require("nvim-treesitter").setup({
-      ensure_install = {
-        "core",
-        "stable",
-        -- Elixir langs
-        "elixir",
-        "heex",
-      },
-    })
+    require("nvim-treesitter").setup()
 
     local syntax_on = {
-      elixir = true,
-      php = true,
+      -- typescript = true,
+      java = true,
     }
 
     vim.api.nvim_create_autocmd("FileType", {

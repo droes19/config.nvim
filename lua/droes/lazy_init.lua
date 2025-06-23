@@ -13,6 +13,27 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-  spec = "droes.lazy",
+  spec = {
+    -- Core functionality
+    { import = "droes.lazy.core" },
+
+    -- User interface
+    { import = "droes.lazy.ui" },
+
+    -- Git integration
+    { import = "droes.lazy.git" },
+
+    -- Text editing
+    { import = "droes.lazy.editing" },
+
+    -- Development tools
+    { import = "droes.lazy.tools" },
+
+    -- Miscellaneous
+    { import = "droes.lazy.misc" },
+
+    -- Individual files that don't fit categories
+    { import = "droes.lazy" },
+  },
   change_detection = { notify = false },
 })

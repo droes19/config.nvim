@@ -40,3 +40,6 @@ opt.splitbelow = true
 -- Minimal number of screen lines to keep above and below the cursor.
 opt.scrolloff = 10
 opt.wrap = false
+
+vim.g.loaded_netrw = 1 -- Disable netrw (you have Oil)
+vim.g.loaded_netrwPlugin = 1

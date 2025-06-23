@@ -47,10 +47,6 @@ set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
 set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
--- Better search navigation (keep cursor centered)
-set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
-set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
-
 -- Better page navigation (keep cursor centered)
 set("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
 set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
@@ -239,6 +235,10 @@ local function setup_lsp_keymaps(bufnr)
   map("n", "ga", vim.lsp.buf.code_action, { desc = "Code actions" })
   map("n", "gT", builtin.lsp_type_definitions, { desc = "Go to type definition" })
   map("n", "gs", builtin.lsp_document_symbols, { desc = "Document symbols" })
+  map("n", "K", vim.lsp.buf.hover, { desc = "Hover documentation" })
+  map("n", "<C-k>", vim.lsp.buf.signature_help, { desc = "Signature help" })
+  map("i", "<C-k>", vim.lsp.buf.signature_help, { desc = "Signature help" })
+  map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol" })
 end
 
 -- ============================================================================
@@ -348,16 +348,62 @@ end
 local function get_oil_keymaps()
   return {
     ["<M-h>"] = "actions.select_split",
+    ["<M-v>"] = "actions.select_vsplit",
+    ["<M-t>"] = "actions.select_tab",
+    ["<M-p>"] = "actions.preview",
+    ["<C-c>"] = "actions.close",
+    ["<C-r>"] = "actions.refresh",
+    ["g?"] = "actions.show_help",
   }
 end
 
+local function setup_search_keymaps()
+  local hlslens_ok, hlslens = pcall(require, "hlslens")
+  if hlslens_ok then
+    set(
+      "n",
+      "n",
+      [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>zz]],
+      { desc = "Next search result (centered with hlslens)" }
+    )
+    set(
+      "n",
+      "N",
+      [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>zz]],
+      { desc = "Previous search result (centered with hlslens)" }
+    )
+  else
+    set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
+    set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
+  end
+end
+
+-- Aerial keymaps
+local function setup_aerial_keymaps()
+  set("n", "<leader>a", "<cmd>AerialToggle!<CR>", { desc = "Toggle Aerial" })
+end
+
+local function setup_aerial_buffer_keymaps(bufnr)
+  local function map(mode, lhs, rhs, opts)
+    opts = opts or {}
+    opts.buffer = bufnr
+    set(mode, lhs, rhs, opts)
+  end
+
+  map("n", "{", "<cmd>AerialPrev<CR>", { desc = "Previous aerial symbol" })
+  map("n", "}", "<cmd>AerialNext<CR>", { desc = "Next aerial symbol" })
+end
+
+-- Git blame keymaps
+local function setup_git_blame_keymaps()
+  set("n", "<leader>gb", "<cmd>GitBlameToggle<CR>", { desc = "Toggle git blame" })
+end
 -- ============================================================================
 -- SETUP FUNCTIONS (to be called from plugin configs)
 -- ============================================================================
 
 -- Export setup functions for use in plugin configurations
 local M = {}
-
 M.setup_telescope = setup_telescope_keymaps
 M.setup_harpoon = setup_harpoon_keymaps
 M.setup_git = setup_git_keymaps
@@ -368,5 +414,9 @@ M.setup_diagnostic = setup_diagnostic_keymaps
 M.setup_refactoring = setup_refactoring_keymaps
 M.get_trouble_keymaps = setup_trouble_keymaps
 M.get_oil_keymaps = get_oil_keymaps
+M.setup_search = setup_search_keymaps
+M.setup_aerial = setup_aerial_keymaps
+M.setup_aerial_buffer = setup_aerial_buffer_keymaps
+M.setup_git_blame = setup_git_blame_keymaps
 
 return M

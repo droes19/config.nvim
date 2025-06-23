@@ -35,7 +35,7 @@ return {
         bashls = true,
         gradle_ls = true,
         html = true,
-        jdtls = require("droes.lazy.lsp.jdtls").config,
+        jdtls = require("droes.lang.java.jdtls").config,
         jsonls = {
           server_capabilities = {
             documentFormattingProvider = false,
@@ -47,13 +47,9 @@ return {
             },
           },
         },
-        lua_ls = {
-          server_capabilities = {
-            semanticTokensProvider = vim.NIL,
-          },
-        },
+        lua_ls = require("droes.lang.lua.lua_ls").config,
         tailwindcss = true,
-        vtsls = true,
+        vtsls = require("droes.lang.typescript.vtsls").config,
         yamlls = {
           settings = {
             yaml = {
@@ -90,7 +86,7 @@ return {
       end
       require("mason-lspconfig").setup({
         ensure_installed = ensure_installed,
-        -- automatic
+        automatic_enable = true,
       })
       local disable_semantic_tokens = {
         lua = true,
