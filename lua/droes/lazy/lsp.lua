@@ -105,16 +105,7 @@ return {
             settings = {}
           end
 
-          local builtin = require("telescope.builtin")
-
-          vim.opt_local.omnifunc = "v:lua.vim.lsp.omnifunc"
-          vim.keymap.set("n", "gd", builtin.lsp_definitions, { buffer = 0 })
-          vim.keymap.set("n", "gi", builtin.lsp_implementations, { buffer = 0 })
-          vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = 0 })
-          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = 0 })
-          vim.keymap.set("n", "ga", vim.lsp.buf.code_action, { buffer = 0 })
-          vim.keymap.set("n", "gT", builtin.lsp_type_definitions, { buffer = 0 })
-          vim.keymap.set("n", "gs", builtin.lsp_document_symbols, { buffer = 0 })
+          require("droes.keymaps").setup_lsp(bufnr)
 
           local filetype = vim.bo[bufnr].filetype
           if disable_semantic_tokens[filetype] then
@@ -134,16 +125,8 @@ return {
           end
         end,
       })
-      vim.diagnostic.config({ virtual_text = true, virtual_lines = false })
 
-      vim.keymap.set("", "<leader>l", function()
-        local config = vim.diagnostic.config() or {}
-        if config.virtual_text then
-          vim.diagnostic.config({ virtual_text = false, virtual_lines = true })
-        else
-          vim.diagnostic.config({ virtual_text = true, virtual_lines = false })
-        end
-      end, { desc = "Toggle lsp_lines" })
+      require("droes.keymaps").setup_diagnostic()
 
       local conform = require("conform")
       conform.setup({
@@ -151,15 +134,8 @@ return {
           lua = { "stylua" },
         },
       })
-      vim.keymap.set({ "n", "v" }, "<space>f", function()
-        conform.format({
-          require("conform").format({
-            lsp_fallback = true,
-            async = false,
-            timeout_ms = 500,
-          }),
-        })
-      end)
+
+      require("droes.keymaps").setup_formatting()
 
       vim.api.nvim_create_autocmd("BufWritePre", {
         group = vim.api.nvim_create_augroup("custom-conform", { clear = true }),

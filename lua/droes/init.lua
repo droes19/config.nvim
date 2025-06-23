@@ -1,3 +1,3 @@
 require("droes.set")
-require("droes.remap")
+require("droes.keymaps")
 require("droes.lazy_init")

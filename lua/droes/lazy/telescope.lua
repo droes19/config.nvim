@@ -26,18 +26,6 @@ return {
     pcall(require("telescope").load_extension, "ui-select")
     pcall(require("telescope").load_extension, "smart_history")
 
-    local builtin = require("telescope.builtin")
-    local set = vim.keymap.set
-
-    set("n", "<space>ff", builtin.find_files)
-    set("n", "<space>fgf", builtin.git_files)
-    set("n", "<space>fh", builtin.help_tags)
-    set("n", "<space>fl", builtin.live_grep)
-
-    set("n", "<space>@", builtin.registers)
-    set("n", "<space>lk", builtin.keymaps)
-    set("n", "<space>lc", builtin.colorscheme)
-    set("n", "<space>lcm", builtin.commands)
-    set("n", "<space>lac", builtin.autocommands)
+    require("droes.keymaps").setup_telescope()
   end,
 }

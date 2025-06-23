@@ -17,33 +17,6 @@ return {
     },
   },
   config = function()
-    local refactoring = require("refactoring")
-    vim.keymap.set({ "n", "x" }, "<leader>re", function()
-      return refactoring.refactor("Extract Function")
-    end, { expr = true })
-
-    vim.keymap.set({ "n", "x" }, "<leader>rf", function()
-      return refactoring.refactor("Extract Function To File")
-    end, { expr = true })
-
-    vim.keymap.set({ "n", "x" }, "<leader>rv", function()
-      return refactoring.refactor("Extract Variable")
-    end, { expr = true })
-
-    vim.keymap.set({ "n", "x" }, "<leader>rI", function()
-      return refactoring.refactor("Inline Function")
-    end, { expr = true })
-
-    vim.keymap.set({ "n", "x" }, "<leader>ri", function()
-      return refactoring.refactor("Inline Variable")
-    end, { expr = true })
-
-    vim.keymap.set({ "n", "x" }, "<leader>rbb", function()
-      return refactoring.refactor("Extract Block")
-    end, { expr = true })
-
-    vim.keymap.set({ "n", "x" }, "<leader>rbf", function()
-      return refactoring.refactor("Extract Block To File")
-    end, { expr = true })
+    require("droes.keymaps").setup_refactoring()
   end,
 }
