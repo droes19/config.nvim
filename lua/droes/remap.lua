@@ -44,3 +44,5 @@ set("n", "<C-u>", "<C-u>zz")
 set("n", "<space>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 set("i", ":w", "<Esc>") --  sometimes i forgot to back to normal mode when i want to save
+
+set("t", "<C-H>", [[<C-\><C-n>]])

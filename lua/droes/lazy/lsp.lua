@@ -18,25 +18,6 @@ return {
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
       { "hrsh7th/nvim-cmp", lazy = false, priority = 100 },
-      -- {
-      --   "saghen/blink.cmp",
-      --   build = "cargo build --release",
-      --   opts = {
-      --     sources = {
-      --       -- add lazydev to your completion providers
-      --       default = { "lazydev", "lsp", "path", "snippets", "buffer" },
-      --       providers = {
-      --         lazydev = {
-      --           name = "LazyDev",
-      --           module = "lazydev.integrations.blink",
-      --           -- make lazydev completions top priority (see `:h blink.cmp`)
-      --           score_offset = 100,
-      --         },
-      --       },
-      --     },
-      --     fuzzy = { implementation = "prefer_rust_with_warning" },
-      --   },
-      -- },
       "rafamadriz/friendly-snippets",
       "L3MON4D3/LuaSnip",
       "saadparwaiz1/cmp_luasnip",
@@ -50,12 +31,40 @@ return {
     },
     config = function()
       local servers = {
+        angularls = true,
+        bashls = true,
+        gradle_ls = true,
+        html = true,
+        jdtls = require("droes.lazy.lsp.jdtls").config,
+        jsonls = {
+          server_capabilities = {
+            documentFormattingProvider = false,
+          },
+          settings = {
+            json = {
+              schemas = require("schemastore").json.schemas(),
+              validate = { enable = true },
+            },
+          },
+        },
         lua_ls = {
           server_capabilities = {
             semanticTokensProvider = vim.NIL,
           },
         },
-        jdtls = true,
+        tailwindcss = true,
+        vtsls = true,
+        yamlls = {
+          settings = {
+            yaml = {
+              schemaStore = {
+                enable = false,
+                url = "",
+              },
+              -- schemas = require("schemastore").yaml.schemas(),
+            },
+          },
+        },
       }
 
       local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -90,7 +99,7 @@ return {
         callback = function(args)
           local bufnr = args.buf
           local client = assert(vim.lsp.get_client_by_id(args.data.client_id), "must have valid client")
-          print(client.name)
+
           local settings = servers[client.name]
           if type(settings) ~= "table" then
             settings = {}
@@ -103,6 +112,7 @@ return {
           vim.keymap.set("n", "gi", builtin.lsp_implementations, { buffer = 0 })
           vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = 0 })
           vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = 0 })
+          vim.keymap.set("n", "ga", vim.lsp.buf.code_action, { buffer = 0 })
           vim.keymap.set("n", "gT", builtin.lsp_type_definitions, { buffer = 0 })
           vim.keymap.set("n", "gs", builtin.lsp_document_symbols, { buffer = 0 })
 
@@ -124,6 +134,16 @@ return {
           end
         end,
       })
+      vim.diagnostic.config({ virtual_text = true, virtual_lines = false })
+
+      vim.keymap.set("", "<leader>l", function()
+        local config = vim.diagnostic.config() or {}
+        if config.virtual_text then
+          vim.diagnostic.config({ virtual_text = false, virtual_lines = true })
+        else
+          vim.diagnostic.config({ virtual_text = true, virtual_lines = false })
+        end
+      end, { desc = "Toggle lsp_lines" })
 
       local conform = require("conform")
       conform.setup({
