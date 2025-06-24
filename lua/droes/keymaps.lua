@@ -398,6 +398,62 @@ end
 local function setup_git_blame_keymaps()
   set("n", "<leader>gb", "<cmd>GitBlameToggle<CR>", { desc = "Toggle git blame" })
 end
+--
+-- Buffer management keymaps
+local function setup_buffer_keymaps()
+  set("n", "<leader>bd", "<cmd>Bdelete<cr>", { desc = "Delete Buffer" })
+  set("n", "<leader>bD", "<cmd>Bwipeout<cr>", { desc = "Wipeout Buffer" })
+  set("n", "<leader>ba", "<cmd>%bd|e#|bd#<cr>", { desc = "Delete All Buffers But Current" })
+end
+
+-- Git enhancements keymaps
+local function setup_git_enhanced_keymaps()
+  set("n", "<leader>gB", "<cmd>Gbrowse<cr>", { desc = "Git Browse" })
+  set("n", "<leader>gd", "<cmd>Gdiffsplit<cr>", { desc = "Git Diff Split" })
+  set("n", "<leader>gr", "<cmd>Gread<cr>", { desc = "Git Read (checkout)" })
+  set("n", "<leader>gw", "<cmd>Gwrite<cr>", { desc = "Git Write (stage)" })
+end
+
+local function setup_noice_keymaps()
+  local noice_ok, noice = pcall(require, "noice")
+  if noice then
+    set("c", "<S-Enter>", function()
+      noice.redirect(vim.fn.getcmdline())
+    end, { desc = "Redirect Cmdline" })
+
+    set("", "<leader>nl", function()
+      noice.cmd("last")
+    end, { desc = "Noice Last Message" })
+
+    set("", "<leader>nh", function()
+      noice.cmd("history")
+    end, { desc = "Noice History" })
+
+    set("", "<leader>na", function()
+      noice.cmd("all")
+    end, { desc = "Noice All" })
+
+    set("", "<leader>nd", function()
+      noice.cmd("dismiss")
+    end, { desc = "Dismiss All" })
+
+    set("", "<leader>nt", function()
+      noice.cmd("pick")
+    end, { desc = "Noice Picker (Telescope/FzfLua)" })
+
+    set({ "i", "n", "s" }, "<C-f>", function()
+      if not require("noice.lsp").scroll(4) then
+        return "<C-f>"
+      end
+    end, { silent = true, expr = true, desc = "Scroll Forward" })
+
+    set({ "i", "n", "s" }, "<C-b>", function()
+      if not require("noice.lsp").scroll(-4) then
+        return "<C-b>"
+      end
+    end, { silent = true, expr = true, desc = "Scroll Backward" })
+  end
+end
 -- ============================================================================
 -- SETUP FUNCTIONS (to be called from plugin configs)
 -- ============================================================================
@@ -418,5 +474,8 @@ M.setup_search = setup_search_keymaps
 M.setup_aerial = setup_aerial_keymaps
 M.setup_aerial_buffer = setup_aerial_buffer_keymaps
 M.setup_git_blame = setup_git_blame_keymaps
+M.setup_buffer = setup_buffer_keymaps
+M.setup_git_enhanced = setup_git_enhanced_keymaps
+M.setup_noice = setup_noice_keymaps
 
 return M

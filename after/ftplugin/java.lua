@@ -1,1 +1,0 @@
-vim.keymap.set('i', 'sout', 'System.out.println();<Esc>hi')

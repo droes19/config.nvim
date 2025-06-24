@@ -18,8 +18,14 @@ return {
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
       { "hrsh7th/nvim-cmp", lazy = false, priority = 100 },
-      "rafamadriz/friendly-snippets",
-      "L3MON4D3/LuaSnip",
+      {
+        "L3MON4D3/LuaSnip",
+        run = "make install_jsregexp",
+        dependencies = {
+          "rafamadriz/friendly-snippets",
+        },
+        opts = {},
+      },
       "saadparwaiz1/cmp_luasnip",
       "onsails/lspkind.nvim",
       "roobert/tailwindcss-colorizer-cmp.nvim",
@@ -30,6 +36,15 @@ return {
       { "mason-org/mason.nvim", opts = {} },
     },
     config = function()
+      -- Load the LuaSnip snippets
+      -- require("luasnip.loaders.from_vscode").lazy_load()
+      --      require("luasnip.loaders.from_vscode").lazy_load({
+      --        paths = { vim.fs.joinpath(vim.fn.stdpath("data"), "lazy", "friendly-snippets") },
+      --      })
+      --      require("luasnip.loaders.from_vscode").lazy_load({
+      --        paths = { vim.fs.joinpath(vim.fn.stdpath("data"), "lazy", "snippets") },
+      --      })
+      -- rt
       local servers = {
         angularls = true,
         bashls = true,
