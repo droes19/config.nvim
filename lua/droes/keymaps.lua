@@ -2,6 +2,7 @@ local function defer_setup(setup_fn, delay)
   delay = delay or 100
   vim.defer_fn(setup_fn, delay)
 end
+
 -- ============================================================================
 -- UNIFIED KEYMAP HELPER FUNCTION
 -- ============================================================================
@@ -92,58 +93,500 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- ============================================================================
--- PLUGIN SETUP FUNCTIONS
+-- PLUGIN KEYMAPS FOR LAZY LOADING
 -- ============================================================================
 
--- Telescope Navigation
-local function setup_telescope_keymaps()
-  -- Only set up if telescope is loaded
-  local ok, builtin = pcall(require, "telescope.builtin")
-  if not ok then
-    return
-  end
-
-  -- File Operations
-  map("n", "<space>ff", builtin.find_files, { desc = "Find files" })
-  map("n", "<space>fgf", builtin.git_files, { desc = "Find git files" })
-  map("n", "<space>fh", builtin.help_tags, { desc = "Find help tags" })
-  map("n", "<space>fl", builtin.live_grep, { desc = "Live grep" })
-
-  -- System Utilities
-  map("n", "<space>@", builtin.registers, { desc = "Show registers" })
-  map("n", "<space>lk", builtin.keymaps, { desc = "Show keymaps" })
-  map("n", "<space>lc", builtin.colorscheme, { desc = "Change colorscheme" })
-  map("n", "<space>lcm", builtin.commands, { desc = "Show commands" })
-  map("n", "<space>lac", builtin.autocommands, { desc = "Show autocommands" })
+-- Core Plugins
+local function get_telescope_keymaps()
+  return {
+    {
+      "<space>ff",
+      function()
+        require("telescope.builtin").find_files()
+      end,
+      desc = "Find files",
+    },
+    {
+      "<space>fgf",
+      function()
+        require("telescope.builtin").git_files()
+      end,
+      desc = "Find git files",
+    },
+    {
+      "<space>fh",
+      function()
+        require("telescope.builtin").help_tags()
+      end,
+      desc = "Find help tags",
+    },
+    {
+      "<space>fl",
+      function()
+        require("telescope.builtin").live_grep()
+      end,
+      desc = "Live grep",
+    },
+    {
+      "<space>@",
+      function()
+        require("telescope.builtin").registers()
+      end,
+      desc = "Show registers",
+    },
+    {
+      "<space>lk",
+      function()
+        require("telescope.builtin").keymaps()
+      end,
+      desc = "Show keymaps",
+    },
+    {
+      "<space>lc",
+      function()
+        require("telescope.builtin").colorscheme()
+      end,
+      desc = "Change colorscheme",
+    },
+    {
+      "<space>lcm",
+      function()
+        require("telescope.builtin").commands()
+      end,
+      desc = "Show commands",
+    },
+    {
+      "<space>lac",
+      function()
+        require("telescope.builtin").autocommands()
+      end,
+      desc = "Show autocommands",
+    },
+  }
 end
 
--- Harpoon File Navigation
-local function setup_harpoon_keymaps()
-  local harpoon = require("harpoon")
-
-  map("n", "<space>a", function()
-    harpoon:list():add()
-  end, { desc = "Add file to harpoon" })
-  map("n", "<space>e", function()
-    harpoon.ui:toggle_quick_menu(harpoon:list())
-  end, { desc = "Toggle harpoon menu" })
-
-  -- Quick File Access
-  for _, idx in ipairs({ 1, 2, 3, 4, 5 }) do
-    map("n", string.format("<space>%d", idx), function()
-      harpoon:list():select(idx)
-    end, { desc = string.format("Go to harpoon file %d", idx) })
-  end
-
-  map("n", "<M-p>", function()
-    harpoon:list():prev()
-  end, { desc = "Previous harpoon file" })
-  map("n", "<M-n>", function()
-    harpoon:list():next()
-  end, { desc = "Next harpoon file" })
+local function get_harpoon_keymaps()
+  return {
+    {
+      "<space>a",
+      function()
+        require("harpoon"):list():add()
+      end,
+      desc = "Add file to harpoon",
+    },
+    {
+      "<space>e",
+      function()
+        require("harpoon").ui:toggle_quick_menu(require("harpoon"):list())
+      end,
+      desc = "Toggle harpoon menu",
+    },
+    {
+      "<space>1",
+      function()
+        require("harpoon"):list():select(1)
+      end,
+      desc = "Go to harpoon file 1",
+    },
+    {
+      "<space>2",
+      function()
+        require("harpoon"):list():select(2)
+      end,
+      desc = "Go to harpoon file 2",
+    },
+    {
+      "<space>3",
+      function()
+        require("harpoon"):list():select(3)
+      end,
+      desc = "Go to harpoon file 3",
+    },
+    {
+      "<space>4",
+      function()
+        require("harpoon"):list():select(4)
+      end,
+      desc = "Go to harpoon file 4",
+    },
+    {
+      "<space>5",
+      function()
+        require("harpoon"):list():select(5)
+      end,
+      desc = "Go to harpoon file 5",
+    },
+    {
+      "<M-p>",
+      function()
+        require("harpoon"):list():prev()
+      end,
+      desc = "Previous harpoon file",
+    },
+    {
+      "<M-n>",
+      function()
+        require("harpoon"):list():next()
+      end,
+      desc = "Next harpoon file",
+    },
+  }
 end
 
--- Git Operations (Gitsigns)
+-- Development Tools
+local function get_trouble_keymaps()
+  return {
+    { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
+    { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
+    { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
+    {
+      "<leader>cl",
+      "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+      desc = "LSP Definitions / references / ... (Trouble)",
+    },
+    { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
+    { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
+  }
+end
+
+local function get_aerial_keymaps()
+  return {
+    { "<leader>a", "<cmd>AerialToggle!<CR>", desc = "Toggle Aerial" },
+  }
+end
+
+local function get_refactoring_keymaps()
+  return {
+    {
+      "<leader>re",
+      function()
+        return require("refactoring").refactor("Extract Function")
+      end,
+      mode = { "n", "x" },
+      expr = true,
+      desc = "Extract function",
+    },
+    {
+      "<leader>rf",
+      function()
+        return require("refactoring").refactor("Extract Function To File")
+      end,
+      mode = { "n", "x" },
+      expr = true,
+      desc = "Extract function to file",
+    },
+    {
+      "<leader>rv",
+      function()
+        return require("refactoring").refactor("Extract Variable")
+      end,
+      mode = { "n", "x" },
+      expr = true,
+      desc = "Extract variable",
+    },
+    {
+      "<leader>rI",
+      function()
+        return require("refactoring").refactor("Inline Function")
+      end,
+      mode = { "n", "x" },
+      expr = true,
+      desc = "Inline function",
+    },
+    {
+      "<leader>ri",
+      function()
+        return require("refactoring").refactor("Inline Variable")
+      end,
+      mode = { "n", "x" },
+      expr = true,
+      desc = "Inline variable",
+    },
+    {
+      "<leader>rr",
+      function()
+        return require("refactoring").refactor("Rename Symbol")
+      end,
+      mode = { "n", "x" },
+      expr = true,
+      desc = "Rename symbol",
+    },
+    {
+      "<leader>rbb",
+      function()
+        return require("refactoring").refactor("Extract Block")
+      end,
+      mode = { "n", "x" },
+      expr = true,
+      desc = "Extract block",
+    },
+    {
+      "<leader>rbf",
+      function()
+        return require("refactoring").refactor("Extract Block To File")
+      end,
+      mode = { "n", "x" },
+      expr = true,
+      desc = "Extract block to file",
+    },
+  }
+end
+
+local function get_hlslens_keymaps()
+  return {
+    {
+      "n",
+      [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>zz]],
+      desc = "Next search result (centered with hlslens)",
+    },
+    {
+      "N",
+      [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>zz]],
+      desc = "Previous search result (centered with hlslens)",
+    },
+  }
+end
+
+-- Git Tools
+local function get_neogit_keymaps()
+  return {
+    {
+      "<leader>g",
+      function()
+        require("neogit").open({ kind = "split" })
+      end,
+      desc = "Open Neogit",
+    },
+  }
+end
+
+local function get_git_enhanced_keymaps()
+  return {
+    { "<leader>gB", "<cmd>GBrowse<cr>", desc = "Git Browse" },
+    { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Git Diff Split" },
+    { "<leader>gr", "<cmd>Gread<cr>", desc = "Git Read (checkout)" },
+    { "<leader>gw", "<cmd>Gwrite<cr>", desc = "Git Write (stage)" },
+  }
+end
+
+-- UI Enhancements
+local function get_noice_keymaps()
+  return {
+    {
+      "<S-Enter>",
+      function()
+        require("noice").redirect(vim.fn.getcmdline())
+      end,
+      mode = "c",
+      desc = "Redirect Cmdline",
+    },
+    {
+      "<leader>nl",
+      function()
+        require("noice").cmd("last")
+      end,
+      desc = "Noice Last Message",
+    },
+    {
+      "<leader>nh",
+      function()
+        require("noice").cmd("history")
+      end,
+      desc = "Noice History",
+    },
+    {
+      "<leader>na",
+      function()
+        require("noice").cmd("all")
+      end,
+      desc = "Noice All",
+    },
+    {
+      "<leader>nd",
+      function()
+        require("noice").cmd("dismiss")
+      end,
+      desc = "Dismiss All",
+    },
+    {
+      "<leader>nt",
+      function()
+        require("noice").cmd("pick")
+      end,
+      desc = "Noice Picker",
+    },
+    {
+      "<C-f>",
+      function()
+        if not require("noice.lsp").scroll(4) then
+          return "<C-f>"
+        end
+      end,
+      mode = { "i", "n", "s" },
+      silent = true,
+      expr = true,
+      desc = "Scroll Forward",
+    },
+    {
+      "<C-b>",
+      function()
+        if not require("noice.lsp").scroll(-4) then
+          return "<C-b>"
+        end
+      end,
+      mode = { "i", "n", "s" },
+      silent = true,
+      expr = true,
+      desc = "Scroll Backward",
+    },
+  }
+end
+
+local function get_which_key_keymaps()
+  return {
+    {
+      "<leader>?",
+      function()
+        require("which-key").show({ global = false })
+      end,
+      desc = "Buffer Local Keymaps (which-key)",
+    },
+  }
+end
+
+-- Editing Plugins
+local function get_copilot_keymaps()
+  return {
+    {
+      "<C-J>",
+      'copilot#Accept("\\<CR>")',
+      mode = "i",
+      expr = true,
+      replace_keycodes = false,
+      desc = "Accept Copilot suggestion",
+    },
+  }
+end
+
+-- Testing & Utilities
+local function get_neotest_keymaps()
+  return {
+    {
+      "<leader>tn",
+      function()
+        require("neotest").run.run()
+      end,
+      desc = "Run Neotest",
+    },
+    {
+      "<leader>tN",
+      function()
+        require("neotest").run.run({ suite = true })
+      end,
+      desc = "Run Neotest Suite",
+    },
+    {
+      "<leader>ts",
+      function()
+        require("neotest").summary.toggle()
+      end,
+      desc = "Toggle Neotest Summary",
+    },
+    {
+      "<leader>to",
+      function()
+        require("neotest").output.open({ enter = true })
+      end,
+      desc = "Open Neotest Output",
+    },
+  }
+end
+
+local function get_todo_keymaps()
+  return {
+    {
+      "<leader>td",
+      function()
+        require("todo-comments").jump_next()
+      end,
+      desc = "Next TODO comment",
+    },
+    {
+      "<leader>tD",
+      function()
+        require("todo-comments").jump_prev()
+      end,
+      desc = "Previous TODO comment",
+    },
+    {
+      "<leader>tl",
+      function()
+        require("todo-comments").list()
+      end,
+      desc = "List TODO comments",
+    },
+  }
+end
+
+local function get_persistence_keymaps()
+  return {
+    {
+      "<leader>ps",
+      function()
+        require("persistence").load({ last = true })
+      end,
+      desc = "Restore last session",
+    },
+    {
+      "<leader>pl",
+      function()
+        require("persistence").load()
+      end,
+      desc = "Load session",
+    },
+    {
+      "<leader>pq",
+      function()
+        require("persistence").stop()
+      end,
+      desc = "Quit without saving session",
+    },
+  }
+end
+
+local function get_toggleterm_keymaps()
+  return {
+    { [[<c-\>]], desc = "Toggle Terminal" },
+  }
+end
+
+-- Buffer Management
+local function get_buffer_keymaps()
+  return {
+    { "<leader>bd", "<cmd>Bdelete<cr>", desc = "Delete Buffer" },
+    { "<leader>bD", "<cmd>Bwipeout<cr>", desc = "Wipeout Buffer" },
+    { "<leader>ba", "<cmd>%bd|e#|bd#<cr>", desc = "Delete All Buffers But Current" },
+  }
+end
+
+-- File Management
+local function get_oil_keymaps()
+  return {
+    ["<M-h>"] = "actions.select_split",
+    ["<M-v>"] = "actions.select_vsplit",
+    ["<M-t>"] = "actions.select_tab",
+    ["<M-p>"] = "actions.preview",
+    ["<C-c>"] = "actions.close",
+    ["<C-r>"] = "actions.refresh",
+    ["g?"] = "actions.show_help",
+  }
+end
+
+-- ============================================================================
+-- PLUGIN SETUP FUNCTIONS (Traditional map() style for buffer-specific keymaps)
+-- ============================================================================
+
+-- Git Operations (Gitsigns) - Buffer specific
 local function setup_git_keymaps(bufnr)
   local gitsigns = require("gitsigns")
 
@@ -205,17 +648,8 @@ local function setup_git_keymaps(bufnr)
   map({ "o", "x" }, "ih", gitsigns.select_hunk, { desc = "Select hunk" }, bufnr)
 end
 
--- Neogit Interface
-local function setup_neogit_keymaps()
-  local neogit = require("neogit")
-  map("n", "<leader>g", function()
-    neogit.open({ kind = "split" })
-  end, { desc = "Open Neogit" })
-end
-
--- LSP Operations
+-- LSP Operations - Buffer specific
 local function setup_lsp_keymaps(bufnr)
-  -- Use a more efficient way to check if telescope is available
   local has_telescope = pcall(require, "telescope.builtin")
 
   vim.opt_local.omnifunc = "v:lua.vim.lsp.omnifunc"
@@ -243,6 +677,16 @@ local function setup_lsp_keymaps(bufnr)
   map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol" }, bufnr)
 end
 
+-- Aerial Buffer Keymaps
+local function setup_aerial_buffer_keymaps(bufnr)
+  map("n", "{", "<cmd>AerialPrev<CR>", { desc = "Previous aerial symbol" }, bufnr)
+  map("n", "}", "<cmd>AerialNext<CR>", { desc = "Next aerial symbol" }, bufnr)
+end
+
+-- ============================================================================
+-- GLOBAL SETUP FUNCTIONS (Non-lazy loading)
+-- ============================================================================
+
 -- Code Formatting
 local function setup_formatting_keymaps()
   map({ "n", "v" }, "<space>f", function()
@@ -267,207 +711,54 @@ local function setup_diagnostic_keymaps()
   end, { desc = "Toggle lsp_lines" })
 end
 
--- Code Refactoring
-local function setup_refactoring_keymaps()
-  local refactoring = require("refactoring")
-
-  -- Extract Operations
-  map({ "n", "x" }, "<leader>re", function()
-    return refactoring.refactor("Extract Function")
-  end, { expr = true, desc = "Extract function" })
-  map({ "n", "x" }, "<leader>rf", function()
-    return refactoring.refactor("Extract Function To File")
-  end, { expr = true, desc = "Extract function to file" })
-  map({ "n", "x" }, "<leader>rv", function()
-    return refactoring.refactor("Extract Variable")
-  end, { expr = true, desc = "Extract variable" })
-
-  -- Inline Operations
-  map({ "n", "x" }, "<leader>rI", function()
-    return refactoring.refactor("Inline Function")
-  end, { expr = true, desc = "Inline function" })
-  map({ "n", "x" }, "<leader>ri", function()
-    return refactoring.refactor("Inline Variable")
-  end, { expr = true, desc = "Inline variable" })
-
-  -- Block Operations
-  map({ "n", "x" }, "<leader>rbb", function()
-    return refactoring.refactor("Extract Block")
-  end, { expr = true, desc = "Extract block" })
-  map({ "n", "x" }, "<leader>rbf", function()
-    return refactoring.refactor("Extract Block To File")
-  end, { expr = true, desc = "Extract block to file" })
-end
-
--- Trouble Diagnostics
-local function setup_trouble_keymaps()
-  map("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics (Trouble)" })
-  map("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Buffer Diagnostics (Trouble)" })
-  map("n", "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Symbols (Trouble)" })
-  map(
-    "n",
-    "<leader>cl",
-    "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-    { desc = "LSP Definitions / references / ... (Trouble)" }
-  )
-  map("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", { desc = "Location List (Trouble)" })
-  map("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List (Trouble)" })
-end
-
--- Search Enhancement
-local function setup_search_keymaps()
-  local hlslens_ok, _ = pcall(require, "hlslens")
-  if hlslens_ok then
-    map(
-      "n",
-      "n",
-      [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>zz]],
-      { desc = "Next search result (centered with hlslens)" }
-    )
-    map(
-      "n",
-      "N",
-      [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>zz]],
-      { desc = "Previous search result (centered with hlslens)" }
-    )
-  else
-    map("n", "n", "nzzzv", { desc = "Next search result (centered)" })
-    map("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
-  end
-end
-
--- Code Outline (Aerial)
-local function setup_aerial_keymaps()
-  map("n", "<leader>a", "<cmd>AerialToggle!<CR>", { desc = "Toggle Aerial" })
-end
-
-local function setup_aerial_buffer_keymaps(bufnr)
-  map("n", "{", "<cmd>AerialPrev<CR>", { desc = "Previous aerial symbol" }, bufnr)
-  map("n", "}", "<cmd>AerialNext<CR>", { desc = "Next aerial symbol" }, bufnr)
-end
-
--- Additional Git Tools
-local function setup_git_blame_keymaps()
-  map("n", "<leader>gb", "<cmd>GitBlameToggle<CR>", { desc = "Toggle git blame" })
-end
-
-local function setup_git_enhanced_keymaps()
-  map("n", "<leader>gB", "<cmd>Gbrowse<cr>", { desc = "Git Browse" })
-  map("n", "<leader>gd", "<cmd>Gdiffsplit<cr>", { desc = "Git Diff Split" })
-  map("n", "<leader>gr", "<cmd>Gread<cr>", { desc = "Git Read (checkout)" })
-  map("n", "<leader>gw", "<cmd>Gwrite<cr>", { desc = "Git Write (stage)" })
-end
-
--- Buffer Management
-local function setup_buffer_keymaps()
-  map("n", "<leader>bd", "<cmd>Bdelete<cr>", { desc = "Delete Buffer" })
-  map("n", "<leader>bD", "<cmd>Bwipeout<cr>", { desc = "Wipeout Buffer" })
-  map("n", "<leader>ba", "<cmd>%bd|e#|bd#<cr>", { desc = "Delete All Buffers But Current" })
-end
-
--- Enhanced UI (Noice)
-local function setup_noice_keymaps()
-  local noice_ok, noice = pcall(require, "noice")
-  if not noice_ok then
-    return
-  end
-
-  -- Command Line
-  map("c", "<S-Enter>", function()
-    noice.redirect(vim.fn.getcmdline())
-  end, { desc = "Redirect Cmdline" })
-
-  -- Message Management
-  map("n", "<leader>nl", function()
-    noice.cmd("last")
-  end, { desc = "Noice Last Message" })
-  map("n", "<leader>nh", function()
-    noice.cmd("history")
-  end, { desc = "Noice History" })
-  map("n", "<leader>na", function()
-    noice.cmd("all")
-  end, { desc = "Noice All" })
-  map("n", "<leader>nd", function()
-    noice.cmd("dismiss")
-  end, { desc = "Dismiss All" })
-  map("n", "<leader>nt", function()
-    noice.cmd("pick")
-  end, { desc = "Noice Picker" })
-
-  -- LSP Documentation Scrolling
-  map({ "i", "n", "s" }, "<C-f>", function()
-    if not require("noice.lsp").scroll(4) then
-      return "<C-f>"
-    end
-  end, { silent = true, expr = true, desc = "Scroll Forward" })
-
-  map({ "i", "n", "s" }, "<C-b>", function()
-    if not require("noice.lsp").scroll(-4) then
-      return "<C-b>"
-    end
-  end, { silent = true, expr = true, desc = "Scroll Backward" })
-end
-
--- Oil File Manager Configuration
-local function get_oil_keymaps()
-  return {
-    ["<M-h>"] = "actions.select_split",
-    ["<M-v>"] = "actions.select_vsplit",
-    ["<M-t>"] = "actions.select_tab",
-    ["<M-p>"] = "actions.preview",
-    ["<C-c>"] = "actions.close",
-    ["<C-r>"] = "actions.refresh",
-    ["g?"] = "actions.show_help",
-  }
-end
+-- ============================================================================
+-- DEFERRED SETUP
+-- ============================================================================
 local function setup_deferred_keymaps()
   defer_setup(function()
     -- Only setup if plugins are actually loaded
     if package.loaded["telescope"] then
-      setup_telescope_keymaps()
+      -- Already handled by keys
     end
-
     if package.loaded["harpoon"] then
-      setup_harpoon_keymaps()
-    end
-
-    if package.loaded["gitsigns"] then
-      -- Git keymaps are set up via on_attach, so this is fine
+      -- Already handled by keys
     end
   end, 200)
 end
+
 -- ============================================================================
--- EXPORTED SETUP FUNCTIONS
+-- EXPORTED FUNCTIONS
 -- ============================================================================
 
 local M = {}
 
--- Core Plugin Setups
-M.setup_telescope = setup_telescope_keymaps
-M.setup_harpoon = setup_harpoon_keymaps
-M.setup_git = setup_git_keymaps
-M.setup_neogit = setup_neogit_keymaps
-M.setup_lsp = setup_lsp_keymaps
+-- Plugin keymaps for lazy loading (return keys tables)
+M.get_telescope_keymaps = get_telescope_keymaps
+M.get_harpoon_keymaps = get_harpoon_keymaps
+M.get_trouble_keymaps = get_trouble_keymaps
+M.get_aerial_keymaps = get_aerial_keymaps
+M.get_refactoring_keymaps = get_refactoring_keymaps
+M.get_hlslens_keymaps = get_hlslens_keymaps
+M.get_neogit_keymaps = get_neogit_keymaps
+M.get_git_enhanced_keymaps = get_git_enhanced_keymaps
+M.get_noice_keymaps = get_noice_keymaps
+M.get_which_key_keymaps = get_which_key_keymaps
+M.get_copilot_keymaps = get_copilot_keymaps
+M.get_neotest_keymaps = get_neotest_keymaps
+M.get_todo_keymaps = get_todo_keymaps
+M.get_persistence_keymaps = get_persistence_keymaps
+M.get_toggleterm_keymaps = get_toggleterm_keymaps
+M.get_buffer_keymaps = get_buffer_keymaps
+M.get_oil_keymaps = get_oil_keymaps
 
--- Development Tools
+-- Buffer-specific setup functions (traditional map() style)
+M.setup_git = setup_git_keymaps
+M.setup_lsp = setup_lsp_keymaps
+M.setup_aerial_buffer = setup_aerial_buffer_keymaps
+
+-- Global setup functions
 M.setup_formatting = setup_formatting_keymaps
 M.setup_diagnostic = setup_diagnostic_keymaps
-M.setup_refactoring = setup_refactoring_keymaps
-M.setup_search = setup_search_keymaps
-
--- UI Enhancements
-M.setup_trouble = setup_trouble_keymaps
-M.setup_aerial = setup_aerial_keymaps
-M.setup_aerial_buffer = setup_aerial_buffer_keymaps
-M.setup_noice = setup_noice_keymaps
-
--- Extended Git Tools
-M.setup_git_blame = setup_git_blame_keymaps
-M.setup_git_enhanced = setup_git_enhanced_keymaps
-
--- Utility Functions
-M.setup_buffer = setup_buffer_keymaps
-M.get_oil_keymaps = get_oil_keymaps
 
 setup_deferred_keymaps()
 return M

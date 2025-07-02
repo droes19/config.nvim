@@ -89,7 +89,7 @@ return {
       },
     },
   },
-
+  keys = require("droes.keymaps").get_noice_keymaps(),
   config = function(_, opts)
     require("noice").setup(opts)
 
@@ -120,7 +120,5 @@ return {
       end,
       group = vim.api.nvim_create_augroup("NoiceMacroNotficationDismiss", { clear = true }),
     })
-
-    require("droes.keymaps").setup_noice()
   end,
 }

@@ -16,7 +16,5 @@ return {
       java = true,
     },
   },
-  config = function()
-    require("droes.keymaps").setup_refactoring()
-  end,
+  keys = require("droes.keymaps").get_refactoring_keymaps(),
 }

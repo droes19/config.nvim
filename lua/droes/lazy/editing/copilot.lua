@@ -1,13 +1,9 @@
 return {
   "github/copilot.vim",
   event = "InsertEnter",
+  keys = require("droes.keymaps").get_copilot_keymaps(),
   config = function()
     vim.g.copilot_no_tab_map = true
-    vim.keymap.set("i", "<C-J>", 'copilot#Accept("\\<CR>")', {
-      expr = true,
-      replace_keycodes = false,
-      desc = "Accept Copilot suggestion",
-    })
     vim.g.copilot_filetypes = {
       ["*"] = false,
       ["javascript"] = true,

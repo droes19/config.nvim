@@ -1,7 +1,6 @@
 return {
   "tpope/vim-fugitive",
-  cmd = { "Git", "Gbrowse", "Gread", "Gwrite", "Gdiffsplit" },
-  config = function()
-    require("droes.keymaps").setup_git_enhanced()
-  end,
+  dependencies = { "tpope/vim-rhubarb" },
+  cmd = { "Git", "GBrowse", "Gread", "Gwrite", "Gdiffsplit" },
+  keys = require("droes.keymaps").get_git_enhanced_keymaps(),
 }

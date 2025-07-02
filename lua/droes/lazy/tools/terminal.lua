@@ -1,7 +1,7 @@
 return {
   "akinsho/toggleterm.nvim",
   version = "*",
-  event = { "CmdlineEnter", "VeryLazy" },
+  keys = require("droes.keymaps").get_toggleterm_keymaps(),
   config = function()
     require("toggleterm").setup({
       size = 20,

@@ -1,11 +1,6 @@
 return {
   "ThePrimeagen/harpoon",
   branch = "harpoon2",
-  event = { "CmdlineEnter", "VeryLazy" },
-  config = function()
-    local harpoon = require("harpoon")
-    harpoon:setup()
-
-    require("droes.keymaps").setup_harpoon()
-  end,
+  keys = require("droes.keymaps").get_harpoon_keymaps(),
+  opts = {},
 }

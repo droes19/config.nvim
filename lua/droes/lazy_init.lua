@@ -39,6 +39,10 @@ require("lazy").setup({
   defaults = {
     lazy = true, -- Make all plugins lazy by default
   },
+  install = {
+    missing = true,
+    colorscheme = { "catppuccin" }, -- Load colorscheme immediately
+  },
   performance = {
     cache = {
       enabled = true,
@@ -54,6 +58,13 @@ require("lazy").setup({
         "tohtml",
         "tutor",
         "zipPlugin",
+        "rplugin", -- Disable remote plugins
+        "syntax", -- Use treesitter instead
+        "synmenu",
+        "optwin",
+        "compiler",
+        "bugreport",
+        "ftplugin",
       },
     },
   },
@@ -63,8 +74,14 @@ require("lazy").setup({
   },
   ui = {
     backdrop = 100,
+    size = { width = 0.8, height = 0.8 },
   },
   rocks = {
     enabled = false,
+  },
+  -- Add profiling to identify slow plugins
+  profiling = {
+    loader = false,
+    require = false,
   },
 })

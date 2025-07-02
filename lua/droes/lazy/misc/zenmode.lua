@@ -1,5 +1,5 @@
 return {
   "folke/zen-mode.nvim",
-  event = { "CmdlineEnter" },
+  cmd = "ZenMode",
   opts = {},
 }

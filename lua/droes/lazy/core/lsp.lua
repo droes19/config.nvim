@@ -46,7 +46,7 @@ return {
       -- rt
       vim.defer_fn(function()
         require("luasnip.loaders.from_vscode").lazy_load()
-      end, 1000)
+      end, 100)
       local servers = {
         angularls = true,
         bashls = true,

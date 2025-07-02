@@ -1,5 +1,6 @@
 return {
   "folke/todo-comments.nvim",
-  event = { "CmdlineEnter", "VeryLazy" },
+  cmd = "TodoTrouble",
+  keys = require("droes.keymaps").get_todo_keymaps(),
   opts = {},
 }

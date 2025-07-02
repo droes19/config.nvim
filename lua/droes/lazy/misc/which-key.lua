@@ -4,13 +4,5 @@ return {
   opts = {
     preset = "modern",
   },
-  keys = {
-    {
-      "<leader>?",
-      function()
-        require("which-key").show({ global = false })
-      end,
-      desc = "Buffer Local Keymaps (which-key)",
-    },
-  },
+  keys = require("droes.keymaps").get_which_key_keymaps(),
 }
