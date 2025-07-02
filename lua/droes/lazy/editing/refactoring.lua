@@ -1,6 +1,6 @@
 return {
   "ThePrimeagen/refactoring.nvim",
-  lazy = false,
+  event = { "BufReadPre", "BufNewFile" },
   opts = {
     prompt_func_return_type = {
       go = true,

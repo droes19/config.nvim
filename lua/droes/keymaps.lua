@@ -1,3 +1,7 @@
+local function defer_setup(setup_fn, delay)
+  delay = delay or 100
+  vim.defer_fn(setup_fn, delay)
+end
 -- ============================================================================
 -- UNIFIED KEYMAP HELPER FUNCTION
 -- ============================================================================
@@ -93,7 +97,11 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Telescope Navigation
 local function setup_telescope_keymaps()
-  local builtin = require("telescope.builtin")
+  -- Only set up if telescope is loaded
+  local ok, builtin = pcall(require, "telescope.builtin")
+  if not ok then
+    return
+  end
 
   -- File Operations
   map("n", "<space>ff", builtin.find_files, { desc = "Find files" })
@@ -207,28 +215,32 @@ end
 
 -- LSP Operations
 local function setup_lsp_keymaps(bufnr)
-  local builtin = require("telescope.builtin")
+  -- Use a more efficient way to check if telescope is available
+  local has_telescope = pcall(require, "telescope.builtin")
 
   vim.opt_local.omnifunc = "v:lua.vim.lsp.omnifunc"
 
-  -- Navigation
-  map("n", "gd", builtin.lsp_definitions, { desc = "Go to definition" }, bufnr)
-  map("n", "gi", builtin.lsp_implementations, { desc = "Go to implementation" }, bufnr)
-  map("n", "gr", builtin.lsp_references, { desc = "Go to references" }, bufnr)
-  map("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" }, bufnr)
-  map("n", "gT", builtin.lsp_type_definitions, { desc = "Go to type definition" }, bufnr)
+  if has_telescope then
+    local builtin = require("telescope.builtin")
+    map("n", "gd", builtin.lsp_definitions, { desc = "Go to definition" }, bufnr)
+    map("n", "gi", builtin.lsp_implementations, { desc = "Go to implementation" }, bufnr)
+    map("n", "gr", builtin.lsp_references, { desc = "Go to references" }, bufnr)
+    map("n", "gT", builtin.lsp_type_definitions, { desc = "Go to type definition" }, bufnr)
+    map("n", "gs", builtin.lsp_document_symbols, { desc = "Document symbols" }, bufnr)
+  else
+    -- Fallback to built-in LSP functions
+    map("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" }, bufnr)
+    map("n", "gi", vim.lsp.buf.implementation, { desc = "Go to implementation" }, bufnr)
+    map("n", "gr", vim.lsp.buf.references, { desc = "Go to references" }, bufnr)
+    map("n", "gT", vim.lsp.buf.type_definition, { desc = "Go to type definition" }, bufnr)
+  end
 
-  -- Information
+  map("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" }, bufnr)
   map("n", "K", vim.lsp.buf.hover, { desc = "Hover documentation" }, bufnr)
   map("n", "<C-k>", vim.lsp.buf.signature_help, { desc = "Signature help" }, bufnr)
   map("i", "<C-k>", vim.lsp.buf.signature_help, { desc = "Signature help" }, bufnr)
-
-  -- Actions
   map("n", "ga", vim.lsp.buf.code_action, { desc = "Code actions" }, bufnr)
   map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol" }, bufnr)
-
-  -- Symbols
-  map("n", "gs", builtin.lsp_document_symbols, { desc = "Document symbols" }, bufnr)
 end
 
 -- Code Formatting
@@ -408,7 +420,22 @@ local function get_oil_keymaps()
     ["g?"] = "actions.show_help",
   }
 end
+local function setup_deferred_keymaps()
+  defer_setup(function()
+    -- Only setup if plugins are actually loaded
+    if package.loaded["telescope"] then
+      setup_telescope_keymaps()
+    end
 
+    if package.loaded["harpoon"] then
+      setup_harpoon_keymaps()
+    end
+
+    if package.loaded["gitsigns"] then
+      -- Git keymaps are set up via on_attach, so this is fine
+    end
+  end, 200)
+end
 -- ============================================================================
 -- EXPORTED SETUP FUNCTIONS
 -- ============================================================================
@@ -442,4 +469,5 @@ M.setup_git_enhanced = setup_git_enhanced_keymaps
 M.setup_buffer = setup_buffer_keymaps
 M.get_oil_keymaps = get_oil_keymaps
 
+setup_deferred_keymaps()
 return M

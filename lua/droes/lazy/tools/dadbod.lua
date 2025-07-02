@@ -1,5 +1,6 @@
 return {
   "tpope/vim-dadbod",
+  ft = { "sql", "mysql", "plsql", "pgsql", "sqlite" },
   dependencies = {
     "kristijanhusak/vim-dadbod-ui",
     "kristijanhusak/vim-dadbod-completion",

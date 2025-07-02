@@ -1,39 +1,38 @@
 return {
   {
     "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
-      -- used for completion, annotations and signatures of Neovim apis
       "folke/lazydev.nvim",
       ft = "lua",
       opts = {
         library = {
-          -- Load luvit types when the `vim.uv` word is found
           { path = "luvit-meta/library", words = { "vim%.uv" } },
         },
       },
       { "Bilal2453/luvit-meta", lazy = true },
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-cmdline",
-      { "hrsh7th/nvim-cmp", lazy = false, priority = 100 },
+      { "hrsh7th/cmp-nvim-lsp", event = "InsertEnter" },
+      { "hrsh7th/cmp-buffer", event = "InsertEnter" },
+      { "hrsh7th/cmp-path", event = "InsertEnter" },
+      { "hrsh7th/cmp-cmdline", event = "CmdlineEnter" },
+      { "hrsh7th/nvim-cmp", event = "InsertEnter" },
       {
         "L3MON4D3/LuaSnip",
+        event = "InsertEnter",
         run = "make install_jsregexp",
         dependencies = {
           "rafamadriz/friendly-snippets",
         },
         opts = {},
       },
-      "saadparwaiz1/cmp_luasnip",
-      "onsails/lspkind.nvim",
-      "roobert/tailwindcss-colorizer-cmp.nvim",
-      { "j-hui/fidget.nvim", opts = {} },
-      "b0o/SchemaStore.nvim",
-      "stevearc/conform.nvim",
-      "mason-org/mason-lspconfig.nvim",
-      { "mason-org/mason.nvim", opts = {} },
+      { "saadparwaiz1/cmp_luasnip", event = "InsertEnter" },
+      { "onsails/lspkind.nvim", event = "InsertEnter" },
+      { "roobert/tailwindcss-colorizer-cmp.nvim", event = "InsertEnter" },
+      { "j-hui/fidget.nvim", event = "LspAttach", opts = {} },
+      { "b0o/SchemaStore.nvim", ft = { "json", "yaml" } },
+      { "stevearc/conform.nvim", event = { "BufWritePre" } },
+      { "mason-org/mason-lspconfig.nvim", event = "BufReadPre" },
+      { "mason-org/mason.nvim", cmd = "Mason", opts = {} },
     },
     config = function()
       -- Load the LuaSnip snippets
@@ -45,6 +44,9 @@ return {
       --        paths = { vim.fs.joinpath(vim.fn.stdpath("data"), "lazy", "snippets") },
       --      })
       -- rt
+      vim.defer_fn(function()
+        require("luasnip.loaders.from_vscode").lazy_load()
+      end, 1000)
       local servers = {
         angularls = true,
         bashls = true,

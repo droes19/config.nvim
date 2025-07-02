@@ -1,3 +1,4 @@
+vim.loader.enable()
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 if not vim.loop.fs_stat(lazypath) then
@@ -35,5 +36,35 @@ require("lazy").setup({
     -- Individual files that don't fit categories
     { import = "droes.lazy" },
   },
-  change_detection = { notify = false },
+  defaults = {
+    lazy = true, -- Make all plugins lazy by default
+  },
+  performance = {
+    cache = {
+      enabled = true,
+    },
+    reset_packpath = true,
+    rtp = {
+      disabled_plugins = {
+        "gzip",
+        "matchit",
+        "matchparen",
+        "netrwPlugin",
+        "tarPlugin",
+        "tohtml",
+        "tutor",
+        "zipPlugin",
+      },
+    },
+  },
+  change_detection = {
+    notify = false,
+    enabled = false, -- Disable for faster startup
+  },
+  ui = {
+    backdrop = 100,
+  },
+  rocks = {
+    enabled = false,
+  },
 })

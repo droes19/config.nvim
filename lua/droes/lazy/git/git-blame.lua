@@ -1,5 +1,6 @@
 return {
   "f-person/git-blame.nvim",
+  event = { "CmdlineEnter", "VeryLazy" },
   config = function()
     vim.g.gitblame_enabled = 0 -- Disable by default
     vim.g.gitblame_message_template = "<summary> • <date> • <author>"

@@ -1,6 +1,6 @@
 return {
   "wfxr/minimap.vim",
-  build = "cargo install --locked code-minimap",
+  -- build = "cargo install --locked code-minimap",
   cmd = { "Minimap", "MinimapClose", "MinimapToggle", "MinimapRefresh", "MinimapUpdateHighlight" },
   init = function()
     vim.g.minimap_width = 10

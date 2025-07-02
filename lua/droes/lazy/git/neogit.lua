@@ -1,9 +1,9 @@
 return {
   "NeogitOrg/neogit",
   dependencies = { "sindrets/diffview.nvim" },
+  event = { "CmdlineEnter", "VeryLazy" },
+  opts = {},
   config = function()
-    local neogit = require("neogit")
-    neogit.setup({})
     require("droes.keymaps").setup_neogit()
   end,
 }

@@ -1,6 +1,6 @@
 return {
   "stevearc/aerial.nvim",
-  opts = {},
+  event = { "CmdlineEnter", "VeryLazy" },
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
     "nvim-tree/nvim-web-devicons",

@@ -1,6 +1,7 @@
 local data = assert(vim.fn.stdpath("data")) --[[@as string]]
 return {
   "nvim-telescope/telescope.nvim",
+  event = { "CmdlineEnter", "VeryLazy" },
   dependencies = {
     "nvim-telescope/telescope-ui-select.nvim",
     "nvim-telescope/telescope-smart-history.nvim",
