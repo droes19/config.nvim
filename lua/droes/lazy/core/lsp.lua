@@ -101,9 +101,29 @@ return {
         vim.lsp.config(name, config)
         table.insert(ensure_installed, name)
       end
+
+      ---@type boolean | table
+      local automatic_enable = true
+
+      -- Check if we're in an Angular project
+      local function is_angular_project()
+        local cwd = vim.loop.cwd()
+        local found = vim.fs.find({ "angular.json", "nx.json" }, {
+          upward = true,
+          path = cwd,
+          stop = vim.loop.os_homedir(),
+        })
+        return #found > 0
+      end
+
+      -- If not Angular, exclude angularls from auto-enable
+      if not is_angular_project() then
+        automatic_enable = { exclude = { "angularls" } }
+      end
+
       require("mason-lspconfig").setup({
         ensure_installed = ensure_installed,
-        automatic_enable = true,
+        automatic_enable = automatic_enable,
       })
       local disable_semantic_tokens = {
         lua = true,
