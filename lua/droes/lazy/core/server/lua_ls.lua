@@ -1,6 +1,4 @@
-local M = {}
-
-M.config = {
+return {
   server_capabilities = {
     semanticTokensProvider = vim.NIL,
   },
@@ -22,5 +20,3 @@ M.config = {
     },
   },
 }
-
-return M

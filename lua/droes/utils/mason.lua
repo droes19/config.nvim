@@ -2,13 +2,6 @@ local mason_registry = require("mason-registry")
 
 local M = {}
 
----Returns the path to the package in mason packages
----@param pkg_name string
----@return string | nil
-function M.get_pkg_path(pkg_name)
-  return mason_registry.get_package(pkg_name):get_install_path()
-end
-
 ---Returns true if the package in installed in mason
 ---@param pkg_name string
 ---@return boolean
@@ -21,6 +14,24 @@ end
 ---@return string # path to the shared artifact directory of the package
 function M.get_shared_path(pkg_name)
   return vim.fn.glob("$MASON/share/" .. pkg_name)
+end
+
+---@param pkg_list table
+function M.ensure_installed(pkg_list)
+  for _, pkg_name in ipairs(pkg_list) do
+    local pkg = mason_registry.get_package(pkg_name)
+    if not pkg:is_installed() then
+      pkg:install()
+    elseif pkg:get_installed_version() ~= pkg:get_latest_version() then
+      -- print("not latest")
+      pkg:install({
+        version = pkg:get_latest_version(),
+      })
+    else
+      -- print(pkg:get_installed_version())
+      -- print(pkg:get_latest_version())
+    end
+  end
 end
 
 return M

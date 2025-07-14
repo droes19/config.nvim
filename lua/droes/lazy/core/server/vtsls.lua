@@ -1,6 +1,4 @@
-local M = {}
-
-M.config = {
+return {
   settings = {
     typescript = {
       inlayHints = {
@@ -26,5 +24,3 @@ M.config = {
     },
   },
 }
-
-return M

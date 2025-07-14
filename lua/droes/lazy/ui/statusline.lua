@@ -1,7 +1,7 @@
 return {
   "nvim-lualine/lualine.nvim",
   lazy = false,
-  dependencies = { "nvim-tree/nvim-web-devicons" },
+  priority = 1000,
   config = function()
     require("lualine").setup({
       option = "tokyonight",

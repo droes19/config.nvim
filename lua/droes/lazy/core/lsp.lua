@@ -1,7 +1,8 @@
 return {
   {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPre", "BufNewFile" },
+    event = "VeryLazy",
+    -- lazy = false,
     dependencies = {
       "folke/lazydev.nvim",
       ft = "lua",
@@ -36,58 +37,16 @@ return {
     },
     config = function()
       -- Load the LuaSnip snippets
-      -- require("luasnip.loaders.from_vscode").lazy_load()
-      --      require("luasnip.loaders.from_vscode").lazy_load({
-      --        paths = { vim.fs.joinpath(vim.fn.stdpath("data"), "lazy", "friendly-snippets") },
-      --      })
-      --      require("luasnip.loaders.from_vscode").lazy_load({
-      --        paths = { vim.fs.joinpath(vim.fn.stdpath("data"), "lazy", "snippets") },
-      --      })
-      -- rt
       vim.defer_fn(function()
         require("luasnip.loaders.from_vscode").lazy_load()
       end, 100)
-      local servers = {
-        angularls = true,
-        bashls = true,
-        gradle_ls = true,
-        html = true,
-        jdtls = require("droes.lang.java.jdtls").config,
-        jsonls = {
-          server_capabilities = {
-            documentFormattingProvider = false,
-          },
-          settings = {
-            json = {
-              schemas = require("schemastore").json.schemas(),
-              validate = { enable = true },
-            },
-          },
-        },
-        lua_ls = require("droes.lang.lua.lua_ls").config,
-        tailwindcss = true,
-        vtsls = require("droes.lang.typescript.vtsls").config,
-        yamlls = {
-          settings = {
-            yaml = {
-              schemaStore = {
-                enable = false,
-                url = "",
-              },
-              -- schemas = require("schemastore").yaml.schemas(),
-            },
-          },
-        },
-      }
+
+      local servers = require("droes.utils.util").get_files_and_value_as_table_from("droes/lazy/core/server")
 
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       if pcall(require, "cmp_nvim_lsp") then
         capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
       end
-
-      -- if pcall(require, "blink.cmp") then
-      --   capabilities =  require("blink.cmp").get_lsp_capabilities(capabilities)
-      -- end
 
       local ensure_installed = {}
       for name, config in pairs(servers) do
@@ -160,6 +119,14 @@ return {
       })
 
       require("droes.keymaps").setup_diagnostic()
+
+      local ensure_installed_non_lsp = {
+        "stylua",
+        "prettier",
+        "prettierd",
+        "eslint_d",
+      }
+      require("droes.utils.mason").ensure_installed(ensure_installed_non_lsp)
 
       local conform = require("conform")
       conform.setup({
