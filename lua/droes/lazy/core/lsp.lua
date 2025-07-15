@@ -134,6 +134,7 @@ return {
           lua = { "stylua" },
           html = { "prettier" },
           htmlangular = { "prettierd" },
+          json = { "prettierd" },
         },
       })
 

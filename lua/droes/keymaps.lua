@@ -72,6 +72,10 @@ map(
   { desc = "Search and replace word under cursor" }
 )
 
+-- Remap repeat opposite f,t,F,T. cause comma ',' is used as leader key
+map("n", "<leader>;", ",", { desc = "Repeat last f/t/F/T search (opposite direction)" })
+
+map("n", "<NL>", "-", { desc = "Go to previous line (with -)" })
 -- ============================================================================
 -- LANGUAGE-SPECIFIC SNIPPETS
 -- ============================================================================
