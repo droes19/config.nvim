@@ -125,6 +125,7 @@ return {
         "prettier",
         "prettierd",
         "eslint_d",
+        "google-java-format",
       }
       require("droes.utils.mason").ensure_installed(ensure_installed_non_lsp)
 
@@ -135,6 +136,7 @@ return {
           html = { "prettier" },
           htmlangular = { "prettierd" },
           json = { "prettierd" },
+          java = { "google-java-format" },
         },
       })
 
@@ -147,6 +149,7 @@ return {
             bufnr = args.buf,
             lsp_fallback = true,
             quiet = true,
+            async = true,
           })
         end,
       })
