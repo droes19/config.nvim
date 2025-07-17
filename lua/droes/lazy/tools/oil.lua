@@ -2,6 +2,7 @@ return {
   "stevearc/oil.nvim",
   -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
   lazy = false,
+  priority = 1000,
   config = function()
     CustomOilBar = function()
       local path = vim.fn.expand("%")
