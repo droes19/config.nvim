@@ -33,7 +33,16 @@ return {
       { "b0o/SchemaStore.nvim", ft = { "json", "yaml" } },
       { "stevearc/conform.nvim", event = { "BufWritePre" } },
       { "mason-org/mason-lspconfig.nvim", event = "BufReadPre" },
-      { "mason-org/mason.nvim", cmd = "Mason", opts = {} },
+      {
+        "mason-org/mason.nvim",
+        cmd = "Mason",
+        opts = {
+          registries = {
+            "github:mason-org/mason-registry",
+            "github:nvim-java/mason-registry",
+          },
+        },
+      },
     },
     config = function()
       -- Load the LuaSnip snippets
@@ -137,6 +146,14 @@ return {
           htmlangular = { "prettierd" },
           json = { "prettierd" },
           java = { "google-java-format" },
+          typescript = { "prettierd" },
+          nu = { "topiary_nu" },
+        },
+        formatters = {
+          topiary_nu = {
+            command = "topiary",
+            args = { "format", "--language", "nu" },
+          },
         },
       })
 

@@ -38,6 +38,9 @@ map("n", "<down>", '<cmd>echo "Use j to move!!"<CR>', { desc = "Remind to use j"
 map("i", ":w", "<Esc>", { desc = "Exit insert mode (when trying to save)" })
 map("t", "<C-H>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
 
+map({ "n", "v" }, "<space>p", [["+p]])
+map({ "n", "v" }, "<space>y", [["+y]])
+map("n", "<space>Y", [["+Y]])
 -- ============================================================================
 -- WINDOW MANAGEMENT
 -- ============================================================================

@@ -1,12 +1,7 @@
 local M = {}
 local function check_directory_exists(directory)
-  local handle = io.popen("cd " .. directory .. " && pwd")
-  if handle == nil then
-    return
-  end
-  local result = handle:read("*a")
-  handle:close()
-  return result ~= ""
+  local uv = vim.loop
+  return uv.fs_realpath(directory) ~= ""
 end
 
 --- Get all Lua files in a directory and return their values as a table.
