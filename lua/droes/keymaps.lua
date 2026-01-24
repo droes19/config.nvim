@@ -67,6 +67,7 @@ map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 map("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
 map("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 
+map("n", "J)", "J0")
 -- Search & Replace
 map(
   "n",
@@ -79,6 +80,8 @@ map(
 map("n", "<leader>;", ",", { desc = "Repeat last f/t/F/T search (opposite direction)" })
 
 map("n", "<NL>", "-", { desc = "Go to previous line (with -)" })
+
+map("n", "<leader>ta", ":Tab ")
 -- ============================================================================
 -- LANGUAGE-SPECIFIC SNIPPETS
 -- ============================================================================
@@ -114,7 +117,7 @@ local function get_telescope_keymaps()
       desc = "Find files",
     },
     {
-      "<space>fgf",
+      "<space>fg",
       function()
         require("telescope.builtin").git_files()
       end,
@@ -694,16 +697,6 @@ end
 -- GLOBAL SETUP FUNCTIONS (Non-lazy loading)
 -- ============================================================================
 
--- Code Formatting
-local function setup_formatting_keymaps()
-  map({ "n", "v" }, "<space>f", function()
-    require("conform").format({
-      lsp_fallback = true,
-      async = false,
-      timeout_ms = 500,
-    })
-  end, { desc = "Format code" })
-end
 
 -- Diagnostic Management
 local function setup_diagnostic_keymaps()
@@ -766,6 +759,8 @@ M.setup_aerial_buffer = setup_aerial_buffer_keymaps
 -- Global setup functions
 M.setup_formatting = setup_formatting_keymaps
 M.setup_diagnostic = setup_diagnostic_keymaps
+
+M.map = map
 
 setup_deferred_keymaps()
 return M

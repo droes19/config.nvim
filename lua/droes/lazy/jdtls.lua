@@ -1,0 +1,58 @@
+return {
+  -- "mfussenegger/nvim-jdtls",
+  -- ft = { "java" },
+  --
+  -- config = function()
+  --   -- Create a single augroup to avoid duplicate autocmds on reload
+  --   local group = vim.api.nvim_create_augroup("jdtls_buf_cmds", { clear = true })
+  --
+  --   vim.api.nvim_create_autocmd("LspAttach", {
+  --     group = group,
+  --     callback = function(args)
+  --       -- Defensive guards: args.data may be nil, client may be absent
+  --       if not args.data or not args.data.client_id then
+  --         return
+  --       end
+  --
+  --       local client = vim.lsp.get_client_by_id(args.data.client_id)
+  --       if not client or client.name ~= "jdtls" then
+  --         return
+  --       end
+  --
+  --       local bufnr = args.buf
+  --
+  --       -- Make sure jdtls is available; avoid hard errors on require
+  --       local ok, jdtls = pcall(require, "jdtls")
+  --       if not ok then
+  --         vim.notify("jdtls not available; buffer commands not created", vim.log.levels.WARN)
+  --         return
+  --       end
+  --
+  --       -- Helper to create buffer-local commands cleanly
+  --       local function buf_cmd(name, fn, opts)
+  --         vim.api.nvim_buf_create_user_command(bufnr, name, fn, opts or {})
+  --       end
+  --
+  --       -- JdtSetRuntime: forward <f-args> to jdtls.set_runtime
+  --       buf_cmd("JdtSetRuntime", function(cmd)
+  --         -- cmd.args is a single string when nargs="?"
+  --         -- jdtls.set_runtime accepts a table or string depending on your usage;
+  --         -- here we pass the raw args to keep parity with original behavior.
+  --         local arg = cmd.args
+  --         -- If you prefer structured input, you can parse cmd.fargs for nargs="*"
+  --         jdtls.set_runtime(arg)
+  --       end, {
+  --         nargs = "?",
+  --         desc = "Set JDTLS runtime (delegates to jdtls.set_runtime)",
+  --         complete = "custom,v:lua.require'jdtls'._complete_set_runtime",
+  --         -- buffer-local; no need for 'bang' or range here
+  --       })
+  --
+  --       -- You can add more handy buffer-local commands here if you like:
+  --       -- buf_cmd("JdtOrganizeImports", function() jdtls.organize_imports() end, { desc = "Organize imports" })
+  --       -- buf_cmd("JdtTestClass", function() jdtls.test_class() end, { desc = "Run tests in class" })
+  --       -- buf_cmd("JdtTestNearestMethod", function() jdtls.test_nearest_method() end, { desc = "Run nearest test" })
+  --     end,
+  --   })
+  -- end,
+}

@@ -1,9 +1,9 @@
----@class droes.List
+---@class java-core.List
 local M = {}
 
 ---Returns a new list
 ---@param o? table
----@return droes.List
+---@return java-core.List
 function M:new(o)
   o = o or {}
   setmetatable(o, self)
@@ -15,6 +15,14 @@ end
 ---@param value any
 function M:push(value)
   table.insert(self, value)
+end
+
+---Appends a value into to the list
+---@param value any
+function M:push_if(condition, value)
+  if condition then
+    self:push(value)
+  end
 end
 
 ---Finds the matching value in a list
@@ -30,9 +38,56 @@ function M:find(finder)
   return nil
 end
 
+--- Finds the matching value in a list before a given index
+--- @param finder fun(value: any): boolean
+--- @return boolean
+function M:contains(finder)
+  if type(finder) == "function" then
+    for _, value in ipairs(self) do
+      if finder(value) then
+        return true
+      end
+    end
+  else
+    for _, value in ipairs(self) do
+      if value == finder then
+        return true
+      end
+    end
+  end
+
+  return false
+end
+
+--- Finds the matching value in a list after a given index
+---
+--- @param finder fun(value: any): boolean
+--- @return number
+function M:find_index(finder)
+  for i, value in ipairs(self) do
+    if finder(value) then
+      return i
+    end
+  end
+
+  return -1
+end
+
+--- Finds the matching value in a list after a given index
+---@param index number
+---@param finder fun(value: any): boolean
+---@return any|nil
+function M:find_after(index, finder)
+  for i, value in ipairs(self) do
+    if i > index and finder(value) then
+      return value
+    end
+  end
+end
+
 ---Returns a list of mapped values
 ---@param mapper fun(value: any, index: number): any
----@return droes.List
+---@return java-core.List
 function M:map(mapper)
   local mapped = M:new()
 
@@ -44,7 +99,7 @@ function M:map(mapper)
 end
 
 ---Flatten a list
----@return droes.List
+---@return java-core.List
 function M:flatten()
   local flatten = M:new()
 
@@ -59,7 +114,7 @@ end
 
 ---Merge a given list values to current list
 ---@param list any[]
----@return droes.List
+---@return java-core.List
 function M:concat(list)
   local new_list = M:new()
 
@@ -114,7 +169,7 @@ end
 
 ---Returns a filtered list
 ---@param filter fun(value: any, index: integer): boolean
----@return droes.List
+---@return java-core.List
 function M:filter(filter)
   local new_list = M:new()
 

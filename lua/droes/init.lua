@@ -1,3 +1,6 @@
 require("droes.set")
 require("droes.keymaps")
-require("droes.lazy_init")
+
+if not vim.g.vscode then
+  require("droes.lazy_init")
+end

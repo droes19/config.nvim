@@ -49,3 +49,18 @@ vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
 vim.g.loaded_python_provider = 0
 vim.g.loaded_python3_provider = 0
+
+vim.o.fileformat = "unix"
+
+-- vim.o.foldcolumn = "1" -- '0' is not bad
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+-- vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+
+-- vim.o.shell = "C:\\Users\\idrus^kaafi\\Projects\\PowerShell\\pwsh.exe"
+-- vim.o.shell = "C:\\Projects\\Program\\nu\\nu.exe"
+-- vim.o.shellcmdflag = "-c"
+-- vim.o.shellquote = ""
+-- vim.o.shellxquote = ""
+-- vim.o.shellredir = "out>"
+-- vim.shellpipe = ""
