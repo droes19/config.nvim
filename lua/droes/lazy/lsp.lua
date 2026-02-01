@@ -67,8 +67,8 @@ return {
               if client.servers_capabilities.documentSymbolProvider then
                 navic.attach(client, bufnr)
               end
-            else
-              navic.attach(client, bufnr)
+            -- else
+            --   navic.attach(client, bufnr)
             end
           end,
         }, tab.config)

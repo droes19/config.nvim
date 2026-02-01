@@ -82,7 +82,7 @@ return {
     event = "VeryLazy",
     opts = {
       maxkeys = 10,
-      position = "bottom_left",
+      position = "bottom-center",
     },
     config = function(_, opts)
       require("showkeys").setup(opts)
