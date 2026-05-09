@@ -1,0 +1,15 @@
+require("lsp.lua_ls")
+require("lsp.angularls")
+require("lsp.vtsls")
+require("lsp.html")
+local enable = vim.lsp.enable
+
+enable("bashls")
+enable("cssls")
+enable("cssls")
+-- enable("html")
+enable("jsonls")
+enable("lemminx")
+enable("yamlls")
+enable("biome")
+-- enable("ts_ls")
